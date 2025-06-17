@@ -70,7 +70,7 @@
                         <a href="#gamification" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Gamification</a>
                         <a href="#social" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Social</a>
                         <a href="#monetization" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Business Model</a>
-                        <a href="#tech" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Tech & KPIs</a>
+                        <a href="#contact-form" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Subscribe</a>
                     </div>
                 </div>
                 <div class="md:hidden">
@@ -92,7 +92,7 @@
                 <a href="#gamification" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Gamification</a>
                 <a href="#social" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Social</a>
                 <a href="#monetization" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Business Model</a>
-                <a href="#tech" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Tech & KPIs</a>
+                <a href="#contact-form" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Subscribe</a>
             </div>
         </nav>
     </header>
@@ -294,29 +294,27 @@
                 </div>
             </div>
         </section>
-
-        <section id="tech" class="py-16 md:py-24">
-             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Technical Foundation & KPIs</h2>
-                 <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">A successful platform requires a robust technical foundation and clear metrics for success. We are focused on performance, security, and measurable user engagement.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div class="bg-white rounded-2xl shadow-lg p-8">
-                    <h3 class="text-2xl font-semibold text-slate-800 mb-6 text-center">Non-Functional Requirements</h3>
-                    <ul class="space-y-4">
-                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">⚡️</span><div><strong class="text-slate-700">Performance:</strong> Platform loads under 2s with smooth animations.</div></li>
-                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">🎯</span><div><strong class="text-slate-700">Usability (UX):</strong> Minimalist UI. Key actions require 3 taps or less. Self-explanatory onboarding.</div></li>
-                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">🌐</span><div><strong class="text-slate-700">Accessibility:</strong> Adherence to WCAG 2.1 AA standards, including screen reader support.</div></li>
-                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">🔒</span><div><strong class="text-slate-700">Security:</strong> All user data encrypted in transit and at rest with a transparent privacy policy.</div></li>
-                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">📈</span><div><strong class="text-slate-700">Scalability:</strong> Backend architected to support 1 million+ active users without performance degradation.</div></li>
-                    </ul>
+        
+        <section id="contact-form" class="py-16 md:py-24">
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Join the Quest!</h2>
+                    <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">Enter your details below to get updates, tips, and be the first to know about new features.</p>
                 </div>
-                <div>
-                     <h3 class="text-2xl font-semibold text-slate-800 mb-4 text-center">Key Performance Indicators (KPIs)</h3>
-                     <div class="chart-container">
-                        <canvas id="kpiChart"></canvas>
+                <form id="user-data-form" class="max-w-xl mx-auto">
+                    <div class="space-y-6">
+                        <div>
+                            <label for="user-email" class="block text-sm font-medium text-slate-700">Email Address</label>
+                            <input type="email" id="user-email" name="email" required class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm p-3">
+                        </div>
+                        <div>
+                            <label for="user-mobile" class="block text-sm font-medium text-slate-700">Mobile Number</label>
+                            <input type="tel" id="user-mobile" name="mobile" required class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm p-3">
+                        </div>
+                        <button type="submit" class="w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors flex items-center justify-center">Subscribe Now</button>
                     </div>
-                </div>
+                     <p id="form-success-message" class="text-center text-green-600 mt-4 hidden">Thank you for subscribing!</p>
+                </form>
             </div>
         </section>
 
@@ -384,19 +382,30 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const audienceData = {
-                labels: ['Primary: Beginners & Casual (80%)', 'Secondary: Data-Driven (20%)'],
-                datasets: [{ label: 'Target Audience', data: [80, 20], backgroundColor: ['#0d9488', '#99f6e4'], borderColor: '#f1f5f9', borderWidth: 4, hoverOffset: 4 }]
-            };
-            const audienceChartCtx = document.getElementById('audienceChart').getContext('2d');
-            new Chart(audienceChartCtx, { type: 'doughnut', data: audienceData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#475569', font: { family: "'Inter', sans-serif" } } } } } });
+            const audienceCanvas = document.getElementById('audienceChart');
+            if (audienceCanvas) {
+                const audienceData = {
+                    labels: ['Primary: Beginners & Casual (80%)', 'Secondary: Data-Driven (20%)'],
+                    datasets: [{ label: 'Target Audience', data: [80, 20], backgroundColor: ['#0d9488', '#99f6e4'], borderColor: '#f1f5f9', borderWidth: 4, hoverOffset: 4 }]
+                };
+                const audienceChartCtx = audienceCanvas.getContext('2d');
+                new Chart(audienceChartCtx, { type: 'doughnut', data: audienceData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#475569', font: { family: "'Inter', sans-serif" } } } } } });
+            } else {
+                console.error("Failed to find the canvas element with ID 'audienceChart'");
+            }
 
-            const kpiData = {
-                labels: ['D30 Retention', 'DAU (in thousands)', 'NPS Score', 'Conversion Rate'],
-                datasets: [{ label: 'Target KPI', data: [35, 500, 50, 5], backgroundColor: ['#14b8a6', '#5eead4', '#99f6e4', '#ccfbf1'], borderColor: '#0f766e', borderWidth: 1, borderRadius: 4 }]
-            };
-            const kpiChartCtx = document.getElementById('kpiChart').getContext('2d');
-            new Chart(kpiChartCtx, { type: 'bar', data: kpiData, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) { label += ': '; } if (context.parsed.x !== null) { let value = context.parsed.x; if(context.label === 'DAU (in thousands)') label += value + 'k'; else if (context.label === 'NPS Score') label += value; else label += value + '%'; } return label; } } } }, scales: { x: { beginAtZero: true, ticks: { color: '#475569' }, grid: { color: '#e2e8f0' } }, y: { ticks: { color: '#475569', font: { size: 10 } }, grid: { display: false } } } } });
+            const kpiCanvas = document.getElementById('kpiChart');
+            if (kpiCanvas) {
+                const kpiData = {
+                    labels: ['D30 Retention', 'DAU (in thousands)', 'NPS Score', 'Conversion Rate'],
+                    datasets: [{ label: 'Target KPI', data: [35, 500, 50, 5], backgroundColor: ['#14b8a6', '#5eead4', '#99f6e4', '#ccfbf1'], borderColor: '#0f766e', borderWidth: 1, borderRadius: 4 }]
+                };
+                const kpiChartCtx = kpiCanvas.getContext('2d');
+                new Chart(kpiChartCtx, { type: 'bar', data: kpiData, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) { label += ': '; } if (context.parsed.x !== null) { let value = context.parsed.x; if(context.label === 'DAU (in thousands)') label += value + 'k'; else if (context.label === 'NPS Score') label += value; else label += value + '%'; } return label; } } } }, scales: { x: { beginAtZero: true, ticks: { color: '#475569' }, grid: { color: '#e2e8f0' } }, y: { ticks: { color: '#475569', font: { size: 10 } }, grid: { display: false } } } } });
+            } else {
+                 console.error("Failed to find the canvas element with ID 'kpiChart'");
+            }
+
 
             const badgeFilters = document.querySelectorAll('.badge-filter');
             const badgeCards = document.querySelectorAll('.badge-card');
@@ -568,6 +577,17 @@
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
                 
                 window.open(whatsappUrl, '_blank');
+            });
+
+            const userDataForm = document.getElementById('user-data-form');
+            const formSuccessMessage = document.getElementById('form-success-message');
+            userDataForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                formSuccessMessage.classList.remove('hidden');
+                userDataForm.reset();
+                setTimeout(() => {
+                    formSuccessMessage.classList.add('hidden');
+                }, 3000);
             });
 
 
