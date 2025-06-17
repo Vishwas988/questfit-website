@@ -14,7 +14,7 @@
     <!-- Visualization & Content Choices: 
         - Report Info: Target Audience -> Goal: Inform -> Viz: Doughnut Chart.
         - Report Info: Gamification Badges -> Goal: Organize -> Viz: Filterable gallery.
-        - Report Info: Monetization Model -> Goal: Compare -> Viz: Interactive Toggle.
+        - Report Info: Monetization Model -> Goal: Compare -> Viz: Interactive Pricing Table.
         - Report Info: Success Metrics -> Goal: Inform/Compare -> Viz: Bar Chart.
         - NEW - Feature Concept: Personalized Workouts -> Goal: Demonstrate -> Viz: Gemini API Interactive Module -> Interaction: User inputs time/goal/equipment, clicks button to call Gemini API and receive a custom workout plan. Justification: Prototypes a key personalization feature, making the plan tangible.
         - NEW - Feature Concept: Social Engagement -> Goal: Demonstrate -> Viz: Gemini API Interactive Module -> Interaction: User inputs group description, clicks button to call Gemini API for creative challenge ideas. Justification: Shows how AI can boost social feature creativity and engagement.
@@ -104,7 +104,7 @@
 
         <section id="features" class="py-16 md:py-24 bg-white rounded-2xl shadow-lg p-6 md:p-12 my-12">
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Core App Features</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Core Website Features</h2>
                 <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">From seamless onboarding to effortless activity tracking, every feature is designed with simplicity and user motivation in mind. The goal is to remove friction and make fitness tracking a natural part of the user's day.</p>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -207,19 +207,45 @@
 
         <section id="monetization" class="py-16 md:py-24">
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Freemium Business Model</h2>
-                 <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">QuestFit will be free to use, ensuring accessibility for everyone. A premium tier will offer advanced features for our most dedicated users. Use the toggle below to compare the tiers.</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Simple & Transparent Pricing</h2>
+                 <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">Choose the plan that's right for your fitness journey. Unlock powerful features with our Pro plan or get started with the essentials.</p>
             </div>
-            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8">
-                <div class="flex justify-center items-center mb-6">
-                    <span class="font-medium text-slate-600">Free Tier</span>
-                    <label for="tier-toggle" class="relative inline-flex items-center cursor-pointer mx-4">
-                        <input type="checkbox" value="" id="tier-toggle" class="sr-only peer">
-                        <div class="w-14 h-8 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-teal-600"></div>
-                    </label>
-                    <span class="font-medium text-teal-600">QuestFit Pro</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Basic Plan -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 flex flex-col">
+                    <h3 class="text-2xl font-bold text-center text-teal-700">Basic</h3>
+                    <p class="text-center text-slate-500 mt-2">For the everyday adventurer.</p>
+                    <div class="my-8 text-center">
+                        <span class="text-5xl font-bold text-slate-900">₹99</span>
+                        <span class="text-slate-500">/ month</span>
+                    </div>
+                    <ul class="space-y-4 text-slate-600 flex-grow">
+                        <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Core Activity Tracking</li>
+                        <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Full Gamification Engine</li>
+                        <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Standard Badges & Paths</li>
+                        <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Social Challenges</li>
+                    </ul>
+                    <button class="mt-8 w-full bg-stone-200 text-teal-800 font-bold py-3 px-4 rounded-lg hover:bg-stone-300 transition-colors">Choose Basic</button>
                 </div>
-                <div id="monetization-content"></div>
+                <!-- Pro Plan -->
+                <div class="bg-white rounded-2xl shadow-2xl p-8 border-2 border-teal-500 relative flex flex-col">
+                    <span class="bg-teal-500 text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full absolute -top-4 right-6">Most Popular</span>
+                    <h3 class="text-2xl font-bold text-center text-teal-700">Pro</h3>
+                    <p class="text-center text-slate-500 mt-2">For the dedicated achiever.</p>
+                    <div class="my-8 text-center">
+                        <span class="text-5xl font-bold text-slate-900">₹199</span>
+                        <span class="text-slate-500">/ month</span>
+                    </div>
+                    <ul class="space-y-4 text-slate-600 flex-grow">
+                        <li class="flex items-center"><span class="text-teal-500 font-bold mr-3">✨</span> All Basic features, plus:</li>
+                        <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Advanced Analytics & Reports</li>
+                        <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Exclusive "Legendary" Paths</li>
+                        <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Advanced Avatar Customization</li>
+                        <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Create permanent "Guilds"</li>
+                        <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> AI Workout Generator</li>
+                    </ul>
+                    <button class="mt-8 w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors">Choose Pro</button>
+                </div>
             </div>
         </section>
 
@@ -320,14 +346,6 @@
                 });
             });
 
-            const monetizationToggle = document.getElementById('tier-toggle');
-            const monetizationContent = document.getElementById('monetization-content');
-            const freeTierContent = `<h4 class="font-bold text-xl text-slate-800 mb-4">Free Tier</h4><ul class="space-y-3 text-slate-600"><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Core Activity Tracking</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Full Gamification Engine (XP, Streaks)</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Standard Badges & Adventure Paths</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Social Challenges & Leaderboards</li><li class="flex items-center text-sm text-slate-400"><span class="mr-2"></span> Supported by non-intrusive ads</li></ul>`;
-            const proTierContent = `<h4 class="font-bold text-xl text-teal-600 mb-4">QuestFit Pro</h4><ul class="space-y-3 text-slate-600"><li class="flex items-center"><span class="text-teal-500 font-bold mr-2">✨</span> All Free features, plus:</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Advanced Analytics & Reports</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Exclusive "Legendary" Adventure Paths</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Advanced Avatar Customizations</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Create permanent "Guilds" (Teams)</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> 100% Ad-free Experience</li></ul>`;
-            function updateMonetizationContent() { monetizationContent.innerHTML = monetizationToggle.checked ? proTierContent : freeTierContent; }
-            monetizationToggle.addEventListener('change', updateMonetizationContent);
-            updateMonetizationContent();
-
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
@@ -377,7 +395,7 @@
                     let chatHistory = [];
                     chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                     const payload = { contents: chatHistory };
-                    const apiKey = "";
+                    const apiKey = "AIzaSyCp1PoPFZLmL6G21UKyqF0FQV3djfWD4XE";
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                     
                     const response = await fetch(apiUrl, {
@@ -411,5 +429,3 @@
 
         });
     </script>
-</body>
-</html>
