@@ -364,6 +364,12 @@
                 <p id="upi-id-text" class="text-teal-700 font-mono font-bold text-lg">vishwanathpujari1435@ybl</p>
                 <button id="copy-upi-btn" class="mt-2 text-sm text-slate-500 hover:text-teal-600 transition-colors">Copy UPI ID</button>
             </div>
+             <div class="mt-6 border-t border-slate-200 pt-4">
+                 <p class="text-center text-xs text-slate-500 mb-4">After completing the payment, click the button below to confirm with us on WhatsApp.</p>
+                 <button id="confirm-payment-btn" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center">
+                    <span class="mr-2">✅</span> Confirm & Chat on WhatsApp
+                 </button>
+            </div>
         </div>
     </div>
 
@@ -490,6 +496,8 @@
             const copyUpiBtn = document.getElementById('copy-upi-btn');
             const upiIdText = document.getElementById('upi-id-text');
             const qrCodeImg = document.getElementById('qr-code-img');
+            const confirmPaymentBtn = document.getElementById('confirm-payment-btn');
+
 
             buyButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -500,6 +508,9 @@
 
                     modalPlanName.textContent = planName;
                     modalPlanPrice.textContent = `₹${planPrice}`;
+
+                    confirmPaymentBtn.dataset.plan = planName;
+                    confirmPaymentBtn.dataset.price = planPrice;
                     
                     const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${planPrice}&cu=INR`;
                     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
@@ -538,6 +549,18 @@
                 }
                 document.body.removeChild(textArea);
             });
+            
+            confirmPaymentBtn.addEventListener('click', () => {
+                const planName = confirmPaymentBtn.dataset.plan;
+                const planPrice = confirmPaymentBtn.dataset.price;
+                const phoneNumber = "919900085095"; 
+
+                const message = `Hello! I have just completed the payment for the QuestFit ${planName} plan (₹${planPrice}). Please confirm my activation.`;
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                
+                window.open(whatsappUrl, '_blank');
+            });
+
 
         });
     </script>
