@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Report: QuestFit App Requirements</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: "Soothing Stone & Teal" - A calming palette using warm neutrals (Stone) for the background and core UI, with a vibrant yet professional Teal for interactive elements, highlights, and calls-to-action. This creates a supportive, clean, and engaging feel. -->
+    <!-- Application Structure Plan: A dashboard-style, single-page application with a sticky top navigation bar. The structure is thematic, allowing non-linear exploration. Key interactions include filterable galleries, interactive toggles, dynamic charts, and now, two Gemini API-powered modules. The 'AI-Powered Features' section demonstrates dynamic content generation for workouts and social challenges, showing a practical application of LLMs within the app's context. This enhances the PRD by prototyping a core value proposition. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Target Audience -> Goal: Inform -> Viz: Doughnut Chart.
+        - Report Info: Gamification Badges -> Goal: Organize -> Viz: Filterable gallery.
+        - Report Info: Monetization Model -> Goal: Compare -> Viz: Interactive Toggle.
+        - Report Info: Success Metrics -> Goal: Inform/Compare -> Viz: Bar Chart.
+        - NEW - Feature Concept: Personalized Workouts -> Goal: Demonstrate -> Viz: Gemini API Interactive Module -> Interaction: User inputs time/goal/equipment, clicks button to call Gemini API and receive a custom workout plan. Justification: Prototypes a key personalization feature, making the plan tangible.
+        - NEW - Feature Concept: Social Engagement -> Goal: Demonstrate -> Viz: Gemini API Interactive Module -> Interaction: User inputs group description, clicks button to call Gemini API for creative challenge ideas. Justification: Shows how AI can boost social feature creativity and engagement.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; height: 300px; max-height: 350px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; max-height: 400px; } }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .active-nav, .nav-link:hover { color: #0d9488; border-color: #0d9488; }
+        .feature-card { transition: transform 0.2s, box-shadow 0.2s; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .gemini-loader {
+            width: 32px;
+            height: 32px;
+            border: 4px solid #99f6e4;
+            border-bottom-color: #0d9488;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800">
+
+    <header id="header" class="bg-stone-50/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-teal-600">QuestFit PRD</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#vision" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Vision</a>
+                        <a href="#features" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Features</a>
+                        <a href="#ai-features" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">✨ AI Features</a>
+                        <a href="#gamification" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Gamification</a>
+                        <a href="#social" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Social</a>
+                        <a href="#monetization" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Business Model</a>
+                        <a href="#tech" class="nav-link text-slate-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">Tech & KPIs</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-slate-600 hover:text-teal-600 p-2">
+                         <span class="sr-only">Open main menu</span>
+                         <div id="hamburger-icon">
+                             <div class="w-6 h-0.5 bg-slate-600 mb-1.5"></div>
+                             <div class="w-6 h-0.5 bg-slate-600 mb-1.5"></div>
+                             <div class="w-6 h-0.5 bg-slate-600"></div>
+                         </div>
+                    </button>
+                </div>
+            </div>
+             <div id="mobile-menu" class="md:hidden hidden pb-4">
+                <a href="#vision" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Vision</a>
+                <a href="#features" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Features</a>
+                <a href="#ai-features" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">✨ AI Features</a>
+                <a href="#gamification" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Gamification</a>
+                <a href="#social" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Social</a>
+                <a href="#monetization" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Business Model</a>
+                <a href="#tech" class="nav-link block text-slate-600 px-3 py-2 rounded-md text-base font-medium">Tech & KPIs</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <section id="vision" class="min-h-screen flex flex-col justify-center text-center py-16">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-slate-900">Transforming Fitness into an Adventure.</h1>
+            <p class="mt-6 text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">This document outlines the requirements for **QuestFit**, a mobile app designed to make physical activity delightful, rewarding, and social. Explore the core concepts and features that will drive user engagement and build lasting healthy habits.</p>
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-semibold text-slate-800 mb-4">Target Audience</h3>
+                    <p class="text-slate-600 mb-4">QuestFit is primarily for fitness beginners and casual exercisers who are motivated by goals and social rewards, with a secondary audience of data-savvy individuals looking for new motivational tools.</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="audienceChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-16 md:py-24 bg-white rounded-2xl shadow-lg p-6 md:p-12 my-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Core App Features</h2>
+                <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">From seamless onboarding to effortless activity tracking, every feature is designed with simplicity and user motivation in mind. The goal is to remove friction and make fitness tracking a natural part of the user's day.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card bg-stone-100 p-6 rounded-xl"><h3 class="font-bold text-xl text-teal-700 mb-2">🚀 Swift Onboarding</h3><p class="text-slate-600">A setup process under 90 seconds. We ask for minimal data and integrate with Apple Health/Google Fit for immediate value.</p></div>
+                <div class="feature-card bg-stone-100 p-6 rounded-xl"><h3 class="font-bold text-xl text-teal-700 mb-2">👤 The "Adventurer" Profile</h3><p class="text-slate-600">A fun, customizable avatar profile that showcases levels, streaks, and badges, turning progress into a visual identity.</p></div>
+                <div class="feature-card bg-stone-100 p-6 rounded-xl"><h3 class="font-bold text-xl text-teal-700 mb-2">🏃‍♂️ Automatic Tracking</h3><p class="text-slate-600">Automatic pedometer, distance, and workout detection for common activities like walking, running, and cycling.</p></div>
+                <div class="feature-card bg-stone-100 p-6 rounded-xl"><h3 class="font-bold text-xl text-teal-700 mb-2">✍️ Simple Manual Entry</h3><p class="text-slate-600">Easily log over 50 activities from Yoga to Weightlifting with simple duration and intensity inputs.</p></div>
+                <div class="feature-card bg-stone-100 p-6 rounded-xl"><h3 class="font-bold text-xl text-teal-700 mb-2">📊 Visual Dashboard</h3><p class="text-slate-600">A clean dashboard that displays daily, weekly, and monthly progress with engaging charts, not just boring numbers.</p></div>
+                <div class="feature-card bg-stone-100 p-6 rounded-xl"><h3 class="font-bold text-xl text-teal-700 mb-2">🧠 Adaptive Coaching</h3><p class="text-slate-600">The app provides smart goal suggestions and encouraging push notifications to keep users motivated without being annoying.</p></div>
+            </div>
+        </section>
+
+        <section id="ai-features" class="py-16 md:py-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">✨ AI-Powered Features</h2>
+                <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">Demonstrating the next level of personalization. These interactive modules use the Gemini API to generate dynamic content, transforming QuestFit from a simple tracker into an intelligent fitness companion.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h3 class="font-bold text-2xl text-teal-700 mb-2 text-center">✨ Workout Generator</h3>
+                    <p class="text-center text-slate-600 mb-6">Get a personalized workout plan in seconds.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="workout-duration" class="block text-sm font-medium text-slate-700">Time Available (minutes)</label>
+                            <input type="number" id="workout-duration" value="30" class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="workout-goal" class="block text-sm font-medium text-slate-700">Fitness Goal</label>
+                            <input type="text" id="workout-goal" value="Full body strength" class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="workout-equipment" class="block text-sm font-medium text-slate-700">Available Equipment</label>
+                            <input type="text" id="workout-equipment" value="Dumbbells, resistance band" class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                        </div>
+                        <button id="generate-workout-btn" class="w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors flex items-center justify-center">Generate Workout</button>
+                    </div>
+                    <div id="workout-result" class="mt-6 p-4 bg-stone-100 rounded-lg min-h-[150px]">
+                        <p class="text-slate-500">Your generated workout plan will appear here.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h3 class="font-bold text-2xl text-teal-700 mb-2 text-center">✨ Challenge Idea Generator</h3>
+                    <p class="text-center text-slate-600 mb-6">Spark some friendly competition.</p>
+                     <div class="space-y-4">
+                        <div>
+                             <label for="challenge-prompt" class="block text-sm font-medium text-slate-700">Describe your group or team</label>
+                            <textarea id="challenge-prompt" rows="4" class="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">A remote team of 10 people. We want a fun, week-long challenge that isn't too intense.</textarea>
+                        </div>
+                        <button id="generate-challenge-btn" class="w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors flex items-center justify-center">Generate Ideas</button>
+                    </div>
+                     <div id="challenge-result" class="mt-6 p-4 bg-stone-100 rounded-lg min-h-[150px]">
+                        <p class="text-slate-500">Generated challenge ideas will appear here.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gamification" class="py-16 md:py-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">The Gamification Engine</h2>
+                <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">This is the heart of QuestFit. We use principles from games to make fitness intrinsically rewarding. Users earn XP, level up, and collect badges on epic virtual adventures.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                 <div class="text-center p-4"><div class="text-4xl mb-2">⭐</div><h4 class="font-bold text-lg">XP & Levels</h4><p class="text-sm text-slate-600">Earn Experience Points (XP) for all activities to level up your avatar.</p></div>
+                 <div class="text-center p-4"><div class="text-4xl mb-2">🔥</div><h4 class="font-bold text-lg">Streaks</h4><p class="text-sm text-slate-600">Build a streak for meeting your daily goal and watch your flame grow.</p></div>
+                 <div class="text-center p-4"><div class="text-4xl mb-2">🏆</div><h4 class="font-bold text-lg">Badges</h4><p class="text-sm text-slate-600">Unlock over 100 achievements for effort, consistency, and exploration.</p></div>
+                 <div class="text-center p-4"><div class="text-4xl mb-2">🗺️</div><h4 class="font-bold text-lg">Adventure Paths</h4><p class="text-sm text-slate-600">Embark on virtual journeys, like hiking the Inca Trail, powered by your real-world distance.</p></div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                 <h3 class="font-bold text-xl text-slate-800 mb-4 text-center">Interactive Badge Showcase</h3>
+                 <div class="flex justify-center flex-wrap gap-2 mb-6">
+                    <button data-filter="all" class="badge-filter active-filter bg-teal-500 text-white font-semibold py-2 px-4 rounded-full text-sm">All</button>
+                    <button data-filter="effort" class="badge-filter bg-stone-200 text-slate-700 font-semibold py-2 px-4 rounded-full text-sm">Effort</button>
+                    <button data-filter="consistency" class="badge-filter bg-stone-200 text-slate-700 font-semibold py-2 px-4 rounded-full text-sm">Consistency</button>
+                    <button data-filter="exploration" class="badge-filter bg-stone-200 text-slate-700 font-semibold py-2 px-4 rounded-full text-sm">Exploration</button>
+                 </div>
+                 <div id="badge-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    <div class="badge-card" data-category="effort"><div class="bg-stone-100 p-4 rounded-lg text-center"><div class="text-3xl">👟</div><p class="font-semibold text-sm mt-2">First 5k Run</p></div></div>
+                    <div class="badge-card" data-category="effort"><div class="bg-stone-100 p-4 rounded-lg text-center"><div class="text-3xl">🧗</div><p class="font-semibold text-sm mt-2">Marathon Walker</p></div></div>
+                    <div class="badge-card" data-category="consistency"><div class="bg-stone-100 p-4 rounded-lg text-center"><div class="text-3xl">🗓️</div><p class="font-semibold text-sm mt-2">7-Day Streak</p></div></div>
+                    <div class="badge-card" data-category="consistency"><div class="bg-stone-100 p-4 rounded-lg text-center"><div class="text-3xl">💯</div><p class="font-semibold text-sm mt-2">Perfect Month</p></div></div>
+                    <div class="badge-card" data-category="exploration"><div class="bg-stone-100 p-4 rounded-lg text-center"><div class="text-3xl">🦉</div><p class="font-semibold text-sm mt-2">Night Owl</p></div></div>
+                    <div class="badge-card" data-category="exploration"><div class="bg-stone-100 p-4 rounded-lg text-center"><div class="text-3xl">☀️</div><p class="font-semibold text-sm mt-2">Early Bird</p></div></div>
+                    <div class="badge-card" data-category="event"><div class="bg-stone-100 p-4 rounded-lg text-center"><div class="text-3xl">🎉</div><p class="font-semibold text-sm mt-2">New Year, New Me</p></div></div>
+                 </div>
+            </div>
+        </section>
+
+        <section id="social" class="py-16 md:py-24 bg-white rounded-2xl shadow-lg p-6 md:p-12 my-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Community, Not Just Competition</h2>
+                <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">Fitness is better with friends. QuestFit integrates social features that focus on collaboration, mutual encouragement, and shared experiences to keep users motivated together.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="feature-card text-center p-6"><div class="text-4xl mb-4">🤝</div><h3 class="font-bold text-xl text-teal-700 mb-2">Friends & Leaderboards</h3><p class="text-slate-600">Add friends and participate in healthy competition on weekly leaderboards that default to "Friends Only" to keep things fun.</p></div>
+                <div class="feature-card text-center p-6"><div class="text-4xl mb-4">🏆</div><h3 class="font-bold text-xl text-teal-700 mb-2">Group Challenges</h3><p class="text-slate-600">Any user can create custom, short-term challenges for their friends, complete with a dedicated chat for encouragement.</p></div>
+                <div class="feature-card text-center p-6"><div class="text-4xl mb-4">👍</div><h3 class="font-bold text-xl text-teal-700 mb-2">Activity Feed & Kudos</h3><p class="text-slate-600">A friends-only feed shows major achievements. React with "Kudos" to celebrate each other's progress and milestones.</p></div>
+            </div>
+        </section>
+
+        <section id="monetization" class="py-16 md:py-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Freemium Business Model</h2>
+                 <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">QuestFit will be free to use, ensuring accessibility for everyone. A premium tier will offer advanced features for our most dedicated users. Use the toggle below to compare the tiers.</p>
+            </div>
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+                <div class="flex justify-center items-center mb-6">
+                    <span class="font-medium text-slate-600">Free Tier</span>
+                    <label for="tier-toggle" class="relative inline-flex items-center cursor-pointer mx-4">
+                        <input type="checkbox" value="" id="tier-toggle" class="sr-only peer">
+                        <div class="w-14 h-8 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-teal-600"></div>
+                    </label>
+                    <span class="font-medium text-teal-600">QuestFit Pro</span>
+                </div>
+                <div id="monetization-content"></div>
+            </div>
+        </section>
+
+        <section id="tech" class="py-16 md:py-24">
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Technical Foundation & KPIs</h2>
+                 <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">A successful app requires a robust technical foundation and clear metrics for success. We are focused on performance, security, and measurable user engagement.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h3 class="text-2xl font-semibold text-slate-800 mb-6 text-center">Non-Functional Requirements</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">⚡️</span><div><strong class="text-slate-700">Performance:</strong> App launches under 2s with smooth 60 FPS animations and minimal battery drain.</div></li>
+                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">🎯</span><div><strong class="text-slate-700">Usability (UX):</strong> Minimalist UI. Key actions require 3 taps or less. Self-explanatory onboarding.</div></li>
+                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">🌐</span><div><strong class="text-slate-700">Accessibility:</strong> Adherence to WCAG 2.1 AA standards, including screen reader support.</div></li>
+                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">🔒</span><div><strong class="text-slate-700">Security:</strong> All user data encrypted in transit and at rest with a transparent privacy policy.</div></li>
+                        <li class="flex items-start"><span class="text-teal-500 mr-3 mt-1">📈</span><div><strong class="text-slate-700">Scalability:</strong> Backend architected to support 1 million+ active users without performance degradation.</div></li>
+                    </ul>
+                </div>
+                <div>
+                     <h3 class="text-2xl font-semibold text-slate-800 mb-4 text-center">Key Performance Indicators (KPIs)</h3>
+                     <div class="chart-container">
+                        <canvas id="kpiChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300">
+        <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h3 class="text-lg font-bold text-white">QuestFit</h3>
+                    <p class="mt-2 text-sm text-slate-400">Transforming fitness into an adventure.</p>
+                </div>
+                <div>
+                    <h3 class="text-base font-semibold text-white tracking-wider uppercase">Quick Links</h3>
+                    <ul class="mt-4 space-y-2 text-sm">
+                        <li><a href="#vision" class="hover:text-teal-400 transition-colors">Vision</a></li>
+                        <li><a href="#features" class="hover:text-teal-400 transition-colors">Features</a></li>
+                        <li><a href="#ai-features" class="hover:text-teal-400 transition-colors">AI Features</a></li>
+                        <li><a href="#monetization" class="hover:text-teal-400 transition-colors">Business Model</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-base font-semibold text-white tracking-wider uppercase">Contact Us</h3>
+                    <ul class="mt-4 space-y-2 text-sm">
+                        <li class="flex items-center justify-center md:justify-start">
+                            <span class="text-lg">📞</span>
+                            <a href="tel:1234567890" class="ml-2 hover:text-teal-400 transition-colors">123-456-7890</a>
+                        </li>
+                        <li class="flex items-center justify-center md:justify-start">
+                             <span class="text-lg">✉️</span>
+                            <a href="mailto:quest@gmail.com" class="ml-2 hover:text-teal-400 transition-colors">quest@gmail.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-slate-700 pt-8 text-center text-sm">
+                <p class="text-slate-400">&copy; 2025 QuestFit Interactive PRD. This is a conceptual application based on a product requirements document.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const audienceData = {
+                labels: ['Primary: Beginners & Casual (80%)', 'Secondary: Data-Driven (20%)'],
+                datasets: [{ label: 'Target Audience', data: [80, 20], backgroundColor: ['#0d9488', '#99f6e4'], borderColor: '#f1f5f9', borderWidth: 4, hoverOffset: 4 }]
+            };
+            const audienceChartCtx = document.getElementById('audienceChart').getContext('2d');
+            new Chart(audienceChartCtx, { type: 'doughnut', data: audienceData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#475569', font: { family: "'Inter', sans-serif" } } } } } });
+
+            const kpiData = {
+                labels: ['D30 Retention', 'DAU (in thousands)', 'NPS Score', 'Conversion Rate'],
+                datasets: [{ label: 'Target KPI', data: [35, 500, 50, 5], backgroundColor: ['#14b8a6', '#5eead4', '#99f6e4', '#ccfbf1'], borderColor: '#0f766e', borderWidth: 1, borderRadius: 4 }]
+            };
+            const kpiChartCtx = document.getElementById('kpiChart').getContext('2d');
+            new Chart(kpiChartCtx, { type: 'bar', data: kpiData, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) { label += ': '; } if (context.parsed.x !== null) { let value = context.parsed.x; if(context.label === 'DAU (in thousands)') label += value + 'k'; else if (context.label === 'NPS Score') label += value; else label += value + '%'; } return label; } } } }, scales: { x: { beginAtZero: true, ticks: { color: '#475569' }, grid: { color: '#e2e8f0' } }, y: { ticks: { color: '#475569', font: { size: 10 } }, grid: { display: false } } } } });
+
+            const badgeFilters = document.querySelectorAll('.badge-filter');
+            const badgeCards = document.querySelectorAll('.badge-card');
+            badgeFilters.forEach(button => {
+                button.addEventListener('click', () => {
+                    const filter = button.dataset.filter;
+                    badgeFilters.forEach(btn => { btn.classList.remove('active-filter', 'bg-teal-500', 'text-white'); btn.classList.add('bg-stone-200', 'text-slate-700'); });
+                    button.classList.add('active-filter', 'bg-teal-500', 'text-white');
+                    button.classList.remove('bg-stone-200', 'text-slate-700');
+                    badgeCards.forEach(card => {
+                        if (filter === 'all' || card.dataset.category === filter || (filter === 'effort' && card.dataset.category === 'event')) {
+                             card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            const monetizationToggle = document.getElementById('tier-toggle');
+            const monetizationContent = document.getElementById('monetization-content');
+            const freeTierContent = `<h4 class="font-bold text-xl text-slate-800 mb-4">Free Tier</h4><ul class="space-y-3 text-slate-600"><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Core Activity Tracking</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Full Gamification Engine (XP, Streaks)</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Standard Badges & Adventure Paths</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Social Challenges & Leaderboards</li><li class="flex items-center text-sm text-slate-400"><span class="mr-2"></span> Supported by non-intrusive ads</li></ul>`;
+            const proTierContent = `<h4 class="font-bold text-xl text-teal-600 mb-4">QuestFit Pro</h4><ul class="space-y-3 text-slate-600"><li class="flex items-center"><span class="text-teal-500 font-bold mr-2">✨</span> All Free features, plus:</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Advanced Analytics & Reports</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Exclusive "Legendary" Adventure Paths</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Advanced Avatar Customizations</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> Create permanent "Guilds" (Teams)</li><li class="flex items-center"><span class="text-teal-500 mr-2">✔️</span> 100% Ad-free Experience</li></ul>`;
+            function updateMonetizationContent() { monetizationContent.innerHTML = monetizationToggle.checked ? proTierContent : freeTierContent; }
+            monetizationToggle.addEventListener('change', updateMonetizationContent);
+            updateMonetizationContent();
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+            document.querySelectorAll('#mobile-menu a').forEach(link => { link.addEventListener('click', () => { mobileMenu.classList.add('hidden'); }); });
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => { if (pageYOffset >= section.offsetTop - 68) { current = section.getAttribute('id'); } });
+                navLinks.forEach(link => { link.classList.remove('active-nav'); if (link.getAttribute('href') === '#' + current) { link.classList.add('active-nav'); } });
+            });
+
+            const generateWorkoutBtn = document.getElementById('generate-workout-btn');
+            const workoutResultDiv = document.getElementById('workout-result');
+            generateWorkoutBtn.addEventListener('click', async () => {
+                const duration = document.getElementById('workout-duration').value;
+                const goal = document.getElementById('workout-goal').value;
+                const equipment = document.getElementById('workout-equipment').value;
+                
+                const prompt = `Generate a detailed workout plan for a user of a fitness app called QuestFit.
+                - **Time Available:** ${duration} minutes
+                - **Fitness Goal:** ${goal}
+                - **Available Equipment:** ${equipment}
+                The plan should be encouraging, clear, and well-structured with a warm-up, main workout section (with specific exercises, sets, reps, and rest times), and a cool-down. Format the response using markdown-style headers (e.g., using **bold text** for titles).`;
+
+                await callGemini(prompt, workoutResultDiv, generateWorkoutBtn, "Generate Workout");
+            });
+            
+            const generateChallengeBtn = document.getElementById('generate-challenge-btn');
+            const challengeResultDiv = document.getElementById('challenge-result');
+            generateChallengeBtn.addEventListener('click', async () => {
+                const description = document.getElementById('challenge-prompt').value;
+                
+                const prompt = `You are a creative engagement expert for a fitness app called QuestFit. Generate 3 distinct and fun fitness challenge ideas for a group with the following description: "${description}".
+                For each idea, provide a catchy name in bold and a one-sentence description of how it works. The tone should be fun and motivating.`;
+
+                await callGemini(prompt, challengeResultDiv, generateChallengeBtn, "Generate Ideas");
+            });
+
+            async function callGemini(prompt, resultDiv, button, buttonText) {
+                resultDiv.innerHTML = '<div class="flex justify-center items-center h-full"><div class="gemini-loader"></div></div>';
+                button.disabled = true;
+                button.innerHTML = 'Generating...';
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API call failed with status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
+                        let text = result.candidates[0].content.parts[0].text;
+                        text = text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-800">$1</strong>');
+                        text = text.replace(/\*/g, '<br> &bull; ');
+                        resultDiv.innerHTML = `<div class="text-slate-700 space-y-2">${text}</div>`;
+                    } else {
+                        resultDiv.innerHTML = '<p class="text-red-500">Sorry, something went wrong while generating the content. Please try again.</p>';
+                    }
+                } catch (error) {
+                    console.error('Gemini API call error:', error);
+                    resultDiv.innerHTML = `<p class="text-red-500">An error occurred. Please check the console for details.</p>`;
+                } finally {
+                    button.disabled = false;
+                    button.innerHTML = buttonText;
+                }
+            }
+
+        });
+    </script>
+</body>
+</html>
