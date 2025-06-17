@@ -14,7 +14,7 @@
     <!-- Visualization & Content Choices: 
         - Report Info: Target Audience -> Goal: Inform -> Viz: Doughnut Chart.
         - Report Info: Gamification Badges -> Goal: Organize -> Viz: Filterable gallery.
-        - Report Info: Monetization Model -> Goal: Compare -> Viz: Interactive Pricing Table.
+        - Report Info: Monetization Model -> Goal: Compare -> Viz: Interactive Pricing Table with a modal for payment details.
         - Report Info: Success Metrics -> Goal: Inform/Compare -> Viz: Bar Chart.
         - NEW - Feature Concept: Personalized Workouts -> Goal: Demonstrate -> Viz: Gemini API Interactive Module -> Interaction: User inputs time/goal/equipment, clicks button to call Gemini API and receive a custom workout plan. Justification: Prototypes a key personalization feature, making the plan tangible.
         - NEW - Feature Concept: Social Engagement -> Goal: Demonstrate -> Viz: Gemini API Interactive Module -> Interaction: User inputs group description, clicks button to call Gemini API for creative challenge ideas. Justification: Shows how AI can boost social feature creativity and engagement.
@@ -225,7 +225,7 @@
                         <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Standard Badges & Paths</li>
                         <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Social Challenges</li>
                     </ul>
-                    <button class="mt-8 w-full bg-stone-200 text-teal-800 font-bold py-3 px-4 rounded-lg hover:bg-stone-300 transition-colors">Choose Basic</button>
+                    <button class="buy-plan-btn mt-8 w-full bg-stone-200 text-teal-800 font-bold py-3 px-4 rounded-lg hover:bg-stone-300 transition-colors" data-plan="Basic" data-price="99">Choose Basic</button>
                 </div>
                 <!-- Pro Plan -->
                 <div class="bg-white rounded-2xl shadow-2xl p-8 border-2 border-teal-500 relative flex flex-col">
@@ -244,7 +244,7 @@
                         <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> Create permanent "Guilds"</li>
                         <li class="flex items-center"><span class="text-teal-500 mr-3">✔️</span> AI Workout Generator</li>
                     </ul>
-                    <button class="mt-8 w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors">Choose Pro</button>
+                    <button class="buy-plan-btn mt-8 w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors" data-plan="Pro" data-price="199">Choose Pro</button>
                 </div>
             </div>
         </section>
@@ -311,6 +311,23 @@
             </div>
         </div>
     </footer>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 text-2xl font-bold">&times;</button>
+            <h3 class="text-2xl font-bold text-center text-slate-900 mb-2">Complete Your Payment</h3>
+            <p class="text-center text-slate-600 mb-6">To activate your <strong id="modal-plan-name"></strong> plan for <strong id="modal-plan-price"></strong>.</p>
+            <div class="flex justify-center mb-4">
+                <img src="https://placehold.co/200x200/e2e8f0/475569?text=Scan+QR+Code" alt="QR Code for UPI Payment" class="rounded-lg">
+            </div>
+            <p class="text-center text-slate-600">Or pay using the UPI ID below:</p>
+            <div class="mt-2 bg-stone-100 p-3 rounded-lg text-center">
+                <p id="upi-id-text" class="text-teal-700 font-mono font-bold text-lg">vishwanathpujari1435@ybl</p>
+                <button id="copy-upi-btn" class="mt-2 text-sm text-slate-500 hover:text-teal-600 transition-colors">Copy UPI ID</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -427,5 +444,54 @@
                 }
             }
 
+            const buyButtons = document.querySelectorAll('.buy-plan-btn');
+            const paymentModal = document.getElementById('payment-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const modalPlanName = document.getElementById('modal-plan-name');
+            const modalPlanPrice = document.getElementById('modal-plan-price');
+            const copyUpiBtn = document.getElementById('copy-upi-btn');
+            const upiIdText = document.getElementById('upi-id-text');
+
+            buyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const planName = button.dataset.plan;
+                    const planPrice = button.dataset.price;
+
+                    modalPlanName.textContent = planName;
+                    modalPlanPrice.textContent = `₹${planPrice}`;
+                    paymentModal.classList.remove('hidden');
+                });
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                paymentModal.classList.add('hidden');
+            });
+
+            paymentModal.addEventListener('click', (event) => {
+                if (event.target === paymentModal) {
+                    paymentModal.classList.add('hidden');
+                }
+            });
+
+            copyUpiBtn.addEventListener('click', () => {
+                const textToCopy = upiIdText.textContent;
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copyUpiBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyUpiBtn.textContent = 'Copy UPI ID';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                }
+                document.body.removeChild(textArea);
+            });
+
         });
     </script>
+</body>
+</html>
